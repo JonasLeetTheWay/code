@@ -35,10 +35,10 @@ ofstream oFile;
 
 void writeFile(){
     cout << "Writing file...\n";
-    cout << "enter filename: ";
+    cout << "\t enter filename (type \"none\" if dont want to write): ";
     string filename;
     cin >> filename;
-    cout << '\n';
+    if (filename == "none") return;
 
     oFile.open(filename);
 
@@ -49,7 +49,7 @@ void writeFile(){
     }
     
     // write content to oFile
-    cout << "enter content:\n"
+    cout << "\t enter content:\n"
             "(press ` to quit)\n";
     
     // '`' = quit-key, since almost noyone uses it
@@ -60,6 +60,7 @@ void writeFile(){
     char buff[100] = {'\r'};
     int buff_ptr = 0;
 
+    cout << "--------------------------------------------------";
     while( key != quit_key ){
 
         switch (key){
@@ -113,21 +114,76 @@ void writeFile(){
     cin.clear();
     oFile.close();
 
+    cout << "Writing File is completed!" << "\n"
+                                            "--------------------------------------------------"
+                                            "\n\n";
 }
 
 void readFile(){
     cout << "Reading file...\n";
-    cout << "enter filename to read: ";
+    cout << "\t enter filename (can include path, C:\\sample.txt): ";
     string filename;
     cin >> filename;
     cout << '\n';
-
     iFile.open(filename);
+
+    char chs;
+
+    // read current char and proceed to next char, until end of file
+    cout << "--------------------------------------------------";
+    while(!iFile.eof()) {
+        iFile.get(chs);
+
+        if(!iFile.eof()) {
+            // print to console, for debugging
+            cout << chs;
+            // write to file
+            oFile << chs;
+        }
+    }
+    cin.clear();
+    iFile.close();
+
+    cout << "Reading File is completed!" << "\n"
+                                            "--------------------------------------------------"
+                                            "\n\n";
+}
+
+void promptRepeat() {
+
+    cin.clear();
+
+    char ch;
+    cout << "Do you want to repeat? (y/n)\n";
+    cin >> ch;
+
+    while(ch == 'y') {
+        cout << "Which operation to repeat?\n";
+        switch(ch){
+            case '1':
+                writeFile();
+                return; // end function directly, instead of switch statement
+            case '2':
+                readFile();
+                return; // end function directly, instead of switch statement
+            default:
+                cout << "1 for writing file, 2 for reading file: ";
+                cin >> ch; 
+                cout << "You have entered operation: " << ch <<'\n';
+        }
+    }
+    cin.clear();
+
+    cout << "Prompting Repeat is completed!" << "\n"
+                                            "--------------------------------------------------"
+                                            "\n\n";
 }
 
 int main()
 {
     writeFile();
+    readFile();
+    promptRepeat();
 
     return 0;
 }
